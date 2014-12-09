@@ -1,0 +1,425 @@
+<html>
+<head>
+    <title>Diversity Poll Responses (Dec 2014)</title>
+<link href='http://fonts.googleapis.com/css?family=Slabo+27px|Open+Sans+Condensed:300,300italic,700|PT+Sans+Narrow:400,700|Dosis:400,200,300,500,600,700,800|Alegreya:400,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+<style>
+
+body {
+    background: rgb(100, 100, 100);
+    color: white;
+    font-family: "Dosis";
+    transition: background-color 2s cubic-bezier(0.39, 0.575, 0.565, 1);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.question {
+    margin-left: 1em;
+    font-weight: 600;
+    font-size: 2.2em;
+    cursor: pointer;
+}
+
+.current {
+    opacity: 0.7;
+}
+
+.clicked {
+    opacity: 0.9;
+}
+
+#should {
+    margin-top: 0.5em;
+}
+
+#else {
+    margin-top: 0.25em;
+    margin-bottom: 1em;
+}
+
+.alternate {
+    opacity: 0.5;
+}
+
+#response {
+    font-weight: 400;
+    width: 640px;
+    margin: 0 auto;
+    font-size: 1.5em;
+    opacity: 0.9;
+    max-width: 80%;
+    line-height: 1.3;
+    -webkit-touch-callout: text;
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: all;
+}
+
+.arrows {
+    height: 100%;
+    padding-top: 3.5em;
+    padding-left: 5%;
+    padding-right: 5%;
+    position: fixed;
+    top: 0;
+    font-size: 4em;
+    opacity: 0.3;
+    transition: opacity 1s ease;
+    transition: background-color 0.5s ease;
+    background-color: transparent;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.arrows:hover {
+    opacity: 0.7;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: opacity 1s ease;
+    transition: background-color 0.5s ease;
+}
+
+.selected {
+    opacity: 0.7;
+    font-weight: 700;
+}
+
+#left {
+    left: 0;
+}
+
+#right {
+    right: 0;
+}
+
+.subtitle {
+    font-size: 0.5em;
+}
+
+</style>
+</head>
+<body>
+
+<div id="should" class="current question" title="click for a random answer">What should we do about diversity in STEM, if anything?
+    <br><span class="subtitle">concrete proposals, here.</span></div>
+<div id="else" class="alternate question" title="click for a random answer">Anything else?
+    <br><span class="subtitle">e.g. significant event that caused you to start caring about diversity
+        <br> or how much you hate people who talk about diversity all the time, etc.</span></div>
+
+<div id="response">
+</div>
+
+<div id="left" class="arrows" title="click to go left, or press the left arrow key"> &lt; </div>
+<div id="right" class="arrows" title="click to go right, or press the right arrow key"> &gt; </div>
+
+
+</body>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+ <script>
+
+ // from https://stackoverflow.com/questions/17242144/javascript-convert-hsb-hsv-color-to-rgb-accurately
+ function HSVtoRGB(h, s, v) {
+    var r, g, b, i, f, p, q, t;
+    i = Math.floor(h * 6);
+    f = h * 6 - i;
+    p = v * (1 - s);
+    q = v * (1 - f * s);
+    t = v * (1 - (1 - f) * s);
+    switch (i % 6) {
+        case 0: r = v, g = t, b = p; break;
+        case 1: r = q, g = v, b = p; break;
+        case 2: r = p, g = v, b = t; break;
+        case 3: r = p, g = q, b = v; break;
+        case 4: r = t, g = p, b = v; break;
+        case 5: r = v, g = p, b = q; break;
+    }
+    return "rgb(" + [Math.floor(r * 255), Math.floor(g * 255),  Math.floor(b * 255)].join(", ") + ")";
+}
+
+ var i = NaN,
+     s = 0.6,
+     v = 0.4,
+     updateText = function() {
+         location.hash = type + i;
+         $("#response").html(data[i]);
+         $("body").css("background-color", HSVtoRGB(i/data.length, s, v));
+     },
+     updateHash = function() {
+         if (location.hash.contains("should")) {
+             data = sh;
+             type = "should";
+             v = 0.4;
+             i = parseInt(location.hash.replace("#should", ""));
+         } else if (location.hash.contains("else")) {
+             data = el;
+             type = "else";
+             v = 0.2;
+             i = parseInt(location.hash.replace("#else", ""));
+         }
+         else {
+             data = sh;
+             type = "should";
+         }
+         if (isNaN(i))
+             i = Math.floor(Math.random()*data.length);
+         updateText();
+     },
+     type = "";
+
+var right = function() {
+     i++;
+     if (i == data.length)  i = 0;
+     updateText();
+     $("#right").addClass("selected");
+     setTimeout(function() {$("#right").removeClass("selected");}, 100);
+ }
+
+ var left = function() {
+     i--;
+     if (i == -1)  i = data.length - 1;
+     updateText();
+     $("#left").addClass("selected");
+     setTimeout(function() {$("#left").removeClass("selected");}, 100);
+ }
+
+$("#right").click(right);
+$("#left").click(left);
+
+$(window).keydown(function (e){
+    var code = e.keyCode || e.which;
+    if (code == 37)
+        left();
+    else if (code == 39)
+        right();
+});
+
+$("#should").click(function() {
+    location.hash = "should";
+    updateHash();
+    $("#should").addClass("clicked");
+    $("#should").addClass("current");
+    $("#should").removeClass("alternate");
+    $("#else").addClass("alternate");
+    setTimeout(function() {$("#should").removeClass("clicked");}, 200);
+});
+
+$("#else").click(function() {
+    location.hash = "else";
+    updateHash();
+    $("#else").addClass("clicked");
+    $("#else").addClass("current");
+    $("#else").removeClass("alternate");
+    $("#should").addClass("alternate");
+    setTimeout(function() {$("#else").removeClass("clicked");}, 200);
+});
+
+var sh = ["- Seems like it isn't possible to deal with diversity issues without changing societal structures (things like affirmative action will probably do more harm...we can't really take people who aren't quite ready for something...doesn't help them to \"catch up\" in general)<p>- Some examples could include how people talk to kids, what they're encouraged to do (e.g. building and messing around with stuff...my parents were ok with it but my relatives were horrified about a \"girl\" being very messy or something like that)<p>- I don't know if this is widespread, but I feel like it is more common in elementary/middle/high school to tell girls they can't do math (and girls are more likely to internalize that sort of message when they are young, negatively affects them later)",
+
+"-universal paid parental leave for all genders and universally available and affordable childcare<p>-restructure the tenure system so that it doesn't directly conflict with prime childbearing years, and so that family responsibilities can be accommodated<p>-pay grad students a living wage so it's a viable option for more folks from a variety of socioeconomic backgrounds<p>-invest in our public grade schools so bright kids from any background can get the education they need to succeed in STEM<p>-institute active checks on hiring/tenure/promotion processes to make sure that decisions about jobs and resources are not subjected to unconscious bias<p>-do more research about how bias, conscious or unconscious, affects careers, and what methods are effective in leveling the playing field<p>-put in place better protections against sexual harassment and assault, particularly for postdocs and grad students who often find themselves in legal limbo on this with little or no recourse<p>-as a community, hold accountable those who abuse or harass others based on their minority status, and those who express biased views<p>-give a physics Nobel to a woman already, there have been so many women doing amazing work in the past 50 years and at least one of them deserves a Nobel, I mean jesus fucking christ it's been 50 years get your act together already<p>-perform more research on where the pipeline is leaking and why<p>-stop gendering toys so that all children who are interested are encouraged to play with engineering-related toys, not just boys<p>-fix poverty<p>-I could go on but there are other things I should accomplish this evening",
+
+"1 - make it something people talk about <p>2 - make it something advisers and other faculty are made aware of.  should also put in disability awareness here.",
+
+"Active recruitment starting from middle school or earlier - outreach programs and other initiatives to spark interest and reach groups less likely to get involved, training of present workforce to combat stereotypes and make workplaces more diversity-friendly",
+
+"Actually do something about professors who make blatantly sexist/racist/homophobic remarks. Take reports of discrimination seriously. Don't let people get away with things because they're rich/famous/successful/get lots of grants.",
+
+"Address minorities other than black/hispanic",
+
+"Change the way people raise their children. I have no idea how to do this, but gender stereotypes are really dumb and nobody should be convinced to \"fit in\" with them.",
+
+"continue encouraging women and minorities to get involved in STEM! treat everyone equally. don't be dicks to anyone. pretty simple shit that nobody seems to be able to do consistently these days.",
+
+"Continue to change early education to avoid systematic biases that lead to self segregation later in life.",
+
+"Do not allow people to discriminate upon others in the field, promote healthy interactions and avoid stereotypes based on your genitals. Genitals should not come into play while you're earning pay.",
+
+"Don't care about diversity, just have the best people to do the work there",
+
+"education at the high school level (and perhaps before) is what matters. I don't like bullshit hiring initiatives. ",
+
+"Education in childhood/adolescence, better representation in the media, portrayals of diverse STEM professionals in fiction and non-fiction (history education as well as science fiction or drama), work on general social justice issues (ie eliminating widespread pay and opportunity gaps)",
+
+"encourage more girls to explore science & engineering by having more female role models leading outreach events. ",
+
+"encourage non middle/upper class cishet white males to do stem things, as kids, and then continue to encourage them through all levels of school and then professionally. force stem-based institutions to hire more of these ppl, until their makeups reflect the population at large",
+
+"ensure that the buildings where technical courses are taught have restrooms for a) people who aren't male and b) people of all genders.  don't call women bitches in school papers.  don't be assholes, basically.  ",
+
+"Everyone needs to learn about the little things that alienate women and minorities, read up on microaggressions, and examine whether they're complicit. For women, the \"pipeline problem\" has gotten a ton of attention because it means people in academia and industry don't have to examine how the things they do impact the women who are trying to be professionals in STEM, right now. But retention rate of women in STEM careers is horrible (something like ~40% leave tech within 10 years?) so it doesn't matter how many little girls get told \"science is cool\" if the work environment is hostile to them when they grow up.",
+
+"Fire any authority figures (professors) who make blatantly sexist statements. <p> STEM-related educational products/initiatives that have girls as a target demographic--not in any exclusive or differentiated \"STEM for girls\" way, but in a way that incorporates different learning styles, and gives examples using girls/women, etc.  There are some efforts along these lines (GoldieBlox, etc.), but more would be good.  ",
+
+"fix the leaky pipeline.  i dunno about concrete proposals.",
+
+"Fix thing at a lower level. Primary education and the like. Also get rid of sexist old white men in most positions of power at academic institutions.",
+
+"ha. that's a hard problem. i can only solve easy problems.<p>(and i only have personal solutions)",
+
+"How is gender diversity dealt with in other fields? Why is healthcare 78% female? Without an understanding of the root cause, or the underlying issue, if there is one, any attempts at modification are moot. If the controls for the spaceship aren't labeled, wigging them wont solve the problem, tracing the control cables and actuators is.",
+
+"I don't have good answers beyond: Create environments that recognize inherent differences in others' experience from the \"standard\" white, cismale, heterosexual experience, and build those environments to help those with differing experiences that may leave them at a disadvantage. Part of this is talking about it. Recognizing that these differences exist.",
+
+"I don't know what we should do about it.",
+
+"I have very conflicting opinions about affirmative action! :/",
+
+"I think it'd be good to have more teachers who actually care.. because it looks like it's a pretty young age (before/during middle school) that kids start to diverge in the things they're interested in.. and one of the biggest influences in development is teachers.. (asking parents to change might be a bit much..? that's probably on the level of changing society right there..)",
+
+"I think we should just spread awareness that diversity is important -- sometimes people glorify cultures that emphasize a certain type of person, kind of like the \"brogrammer\" culture in Silicon Valley",
+
+"I'm big on equality of opportunity. That means (to me), encouraging people to explore all their interests and skills, providing extra support and exposure to disadvantaged groups, and providing school and work environments that are awesome to the full spectrum of the human race. Concretely,  I'm really into information and mentorship. For example, I can't begin to say how important the MIT admissions blogs were to me, in letting me see what my day to day life could look like if I chose to go to MIT. Demystifying. I could have really used something similar when choosing a major, a field, a career, and a job. Something to show me what the personal, day to day ramifications of my choice would be. Relatedly, I've had a really hard time with the lack of being able to see the people I'm helping in engineering. As a teacher, doctor, coach, masseuse, whatever you get to interact directly with the people your time and skills help. In my job I will never see a person who benefits from my work. I think this need for human stories/human impact is a big influence on women not sticking around in stem (at whatever level - an impressive number of my female stem college-graduate peers have left the field.<p>I am not a big believer in striving for perfect equality of results. I believe that on average more women than men innately have the skills and passions that make for excellent kindergarten teachers, and more men than women innately have the skills and passions that make for excellent Navy SEALS. And that there is nothing wrong with that - as long as the different representations in the different fields are driven by the fundamental abilities and desires of the specific groups, and not differences in  appropriate opportunities for obtaining or honing the skills.",
+
+"idk this is a hard problem okay",
+
+"Idk? Beyond my pay grade bro. I think the only real solution happens at the level of individual families (ie, getting minority families invested in education/getting parents in general to recognize scientific/mathematical interest/talent in their daughters) and that's not something you're going to get with any program no matter how good",
+
+"improve elementary education, provide free opportunities to students in less advantaged areas",
+
+"increase faculty diversity to provide role models for women and minorities.<p>increase access to science and tech education for women and minorities at a super young age (think elementary school).<p>kill the stereotype that girls can't do science/math/engineering.",
+
+"Increase recruitment and scholarships at community colleges.  Most engineers don't come from MIT - they go to not so famous schools.",
+
+"it's not about the corporations, it's about the education. high schools should have more engineering classes and fewer cooking/home-ec classes. media should show more diverse (specifically non-male) engineers as successful role models, and (idk if this is actually a problem but) venture capital / startup-incubator firms should not be biased towards the same-old. But actually, these are just things we all want to see, and it's hard to know the right way to actually do it. It'd be great if there was just less societal pressure for different genders to end up with different kinds of jobs. But cultural change comes slow. In any case, I don't think having girls-only conferences and whatnot helps the matter, either. idk.",
+
+"Let the wider audience understand that there is a problem- from personal experience, I believe implicit bias tests are highly effective. Change the focus from targetting only individuals from the underrepresented category(ies). Talk about the issues that arise as unintended side effects to diversity promoting programs, especially where anything remotely related to affirmitive action is concerned. ",
+
+"make diversity visible in as many ways as possible: for me, being out to my research supervisors both as mentally ill and queer, having APS sessions on LGBT+ and women's issues, LGBT+physicist mailing list, etc'<p>basically community building and visibility are super important, dunno if that's concrete enough",
+
+"Make education better and more accessible, though I don't know how. ",
+
+"MAKE MORE GOOGLE FORMS THAT'LL SHOW 'EM",
+
+"Make more of an effort in the media to show what STEM is, and the types of people (i.e. anyone) can be involved.  More STEM role models, and more diverse STEM role models in the public eye.  ",
+
+"Make sure old white guys (or whoever is the majority) are respectful and welcoming to people of other races/genders/ages etc. <p>I honestly think that the biggest problem facing diversity in STEM is the lack of respect for new non-majority workers by established professionals. ",
+
+"not treat minorities like disabled people with certain *minority focused* groups that make it look like we need special treatment. have black/brown/yellow/green/purple professors. ",
+
+"Parents need to tell their kids to go into STEM if they want and screw anybody who tells them different. Kids need to stop caring about who's discouraging them from going into STEM and start kicking ass.",
+
+"People need a 'buzz reason', which is like a buzzword, but answers the question 'why?' That is, if asked why diversity in STEM matters, people need a reason that they can regurgitate; a reason that has been inculcated and accepted by society. This probably seems ridiculous and illogical, but please recognize that humans aren't very rational on the whole. The vacuum created by having no 'buzz reason' causes everyone to feel just a little less confident about the importance of diversity in STEM anytime they're asked about it. And anyone posing the question rhetorically because they DON'T think it matters, will be just a little bit more confident that they're right when people pause or stammer before answering.",
+
+"Perhaps just encouraging younger minorities to do STEM by showing that it's cool.",
+
+"Provide mentorship for minorities in STEM<p>Encourage equal representation in media<p>Create more toys showing minorities in STEM positions",
+
+"Start encouraging it when kids are in elementary school. I start liking math from a young young age. But I feel like this behavior was discouraged socially, at least in my community. I was that person who didn't really want to paint her nails and liked to read.",
+
+"Start robotics teams early! Lego Robotics in gradeschool, then keep a constant path upwards through High School. Chances of changing old people is low, chances of redirecting and retaining young people are much higher!",
+
+"stop being dicks. I don't like overcompensating but eh, it's with good intentions.",
+
+"Stop conflating aspects of gender dynamics with 'culture'",
+
+"Stop giving minorities extra prizes all the time. Instead keep them competing with everyone else. And if course the real issue is fixing the education system in this country. If it takes extra tutoring to learn basic math a lot of people are put at a disadvantage.",
+
+"Tackle every age group differently:<p>&lt; 5 years<p>pre high school<p>high school<p>undergrad<p>post undergrad<p>Early years: counter stereotyping, inspire awe in stenlm<p>Later: ensure perceived as valid career path<p>Later: tackle job discrimination<p>I may be mistaken, but I strongly believe that the early years are by far the most important (pre high school), followed by high school and then undergrad years<p>Job discrimination is unfortunate but I think the battle is already long lost by this time anyways. I suspect that increasing undergrad interest in stem (and producing more dedicated graduates) is likely the most effective approach to countet job discrimination",
+
+"Take more action in leveling out the playing field in lack of educational resources to those who were socio-economically disadvantaged by providing better and more active tutorial services beyond just GIRs. ",
+
+"we should be actively encouraging girls and poc at all levels of schooling, but particularly at the elementary and middle school level, to excel in science and math",
+
+"You have to have some mechanism by which diversity is encouraged in STEM. What is that mechanism? I don't know. Reward diversity in some way? Make grants contingent upon the group actually having women/people of color/etc? I literally don't know. The problem of diversity in STEM arises sometime in childhood. We need to work on fixing it for the adults while we work on fixing it for the next generation.<p>Which leads to the other side, the perhaps harder side. How do you encourage diversity in STEM from a young age? How do you make sure a bad experience in middle or high school doesn't scare off minorities? It's hard, because it is very much tied into the bigotry of our society. It's not a STEM-specific problem. I think, perhaps, it would help to expose children to STEM in fun and engaging ways. All children, but especially girls and children from low-income homes (who are statistically going to be disproportionately of color). Science summer camps with financial aid, robots and coding competitions for girls. You need to tell them \"Hey, this field exists and it is super cool. You are totally capable of being successful in this field. You are going to meet people who will not think you can be successful in this field, but those people are wrong. Sometimes they will tell you to your face. Sometimes they will silently disregard your contributions and hire a white man instead of you. But that does not mean this field is any less interesting and it does not mean you cannot be successful in it. <p> Support organizations are probably a good thing, the earlier the better. Give people mentors they can talk to about the difficulty of being black/female/both/hispanic/whatever in their field.<p>Punish those who impede diversity in STEM and create an environment in which they are the ones who feel unwelcome. Call out racist/sexist/homophobic actions. Utilize public shame. Take funding away from the professor who refuses to take on female urops."];
+
+var el = ["7th grade assignment to draw a scientist- almost everyone drew a white male",
+
+"a huge part of me realizing how important this was was realizing that the deficit of women in CS contributed to my imposter syndrome (ie stereotype threat - people perform worse when stereotypes expect them to), which I think is a huge thing holding people back",
+
+"As is the usual paradigm among social progressives, this whole form presents a shifted sense of neutrality, implying inherently in language that only the offensive or the uncaring woulda not care about the subject matter. The thing most social progressives fail to understand is that it is possible to be completely uncaring on a subject matter while not inherently opposed to it, a true sense of neutrality. This form seems to indicate that there are only two options on the matter: that of apathy, or that of empathy. In reality, there are as many opinions on a given subject as there are rational degrees in a circle. By limiting the argument to a simple one-dimensional scaler, you force opinions into either your camp or the other, and by shifting the bounds of opinions you regard as \"reasonable\", you disregard outlier opinions and stand surround by only those that would match your own. Inside of this subset, a new pattern of bounds-setting is made, and opinion of the group grows increasingly radicalized. Social progressiveness and its attached philosophies of enforcing diversity, majority discrimination, and handicap glorifying serve only as a cult for the 21st century powered by the mentality of \"everyone is special\" clashing with the capitalist reality of \"everyone is the same\", leading us headlong to a Harrison Bergeron-esque future of glorifying the weak rather than the brave or successful.",
+
+"diversity for the sake of diversity is not inherently worthwhile. diversity for the sake of showing kids that they can achieve foo is worthwhile",
+
+"friends who are girls getting really disrespectful comments when applying for tech jobs, being at startup parties, etc",
+
+"Getting the stupid \"women in STEM\" awards. Just because I've got boobs doesn't mean I can't beat out the guys in science fair.",
+
+"I didn't really come across this issue as a gender-related or demographic thing at first. \[...\] <p> There are also the usual things I encountered about things like people telling me that I only got into MIT b/c I'm a girl...but I'm still somewhat unclear on how gender issues currently affect me directly other than the strange gender ratios in some of my math classes...\[...\] <p> There are other things I'm worried about since I'm interested in going into academia (e.g. maternity), but I've decided to leave that for later, haha. <p> I would like to have a chance to discuss more about diversity issues with people involved in this survey, but I'm not sure how comfortable I'd be with sharing my personal experiences in public since they involve painful experiences that I'd rather not have to think about a lot and I try to avoid unnecessary conflict with other people/getting into arguments... \[EDITOR'S NOTE: removed sensitive parts after discussion\]",
+
+"I don't care that much about diversity in and of itself; however, I do want everyone to be interested in STEM because it's awesome, and I want everyone who's interested to be able to get involved. Thus, if obstacles exist to members of certain groups joining STEM, those need to be removed. We don't necessarily need to create diversity, but we need to fully allow diversity. More to the point, I don't think this is really about STEM in particular; the real ultimate goal should just be to make gender, race, etc. total non-issues in general. (Good luck with that right now, but hopefully it'll happen on its own eventually as society becomes more enlightened; I think the trends are in the right direction, and we can do our humble best to help them along...) So I guess I feel like it's a little silly to just talk about STEM. Other than holding those opinions, I don't really think or do much about diversity.",
+
+"I don't understand why everyone wants to assume that women and men should like all the same things and be good at all the same things. Of course you will have women that are really great at STEM, and they shouldn't face difficulties. But on average, women might just not like it as much or be worse at it, for various reasons. There are a number of differences between the male and female brains, and there seems to be a lack of research actually elucidating this. I guess my point is, I don't know whether there even should be an equal ratio, because I don't know if the natural state of things is an equal ratio. The goal should be that women and men are equally encouraged/financed/whatever to do STEM. not equal outcomes.",
+
+"I hate people who hate people who talk about diversity all the time. (Kidding, kind of). People who hate people who talk about diversity are usually people who have never had anyone tell them they were less intelligent, less capable, less competent, or less deserving because of something out of their control. Despite what some faux-libertarian Ayn Rand  worshipping MIT assholes want to believe, the \"meritocracy\" is inherently unfair as is because of the built-in bias into our society, and the incredibly unequal distribution of resources.",
+
+"I joined tumblr, realized I was queer, and started thinking more intensely about gender and recently race.",
+
+"I just wish that people who talked about diversity stopped using nebulous terminology. I wish scientists and engineers dominated the diversity discussion, because the liberal arts folks just make it sound wishy-washy.<p>I started caring about diversity in STEM when I realized that people today are far more able to use technology to magnify their talents and earning potential than at any time in the past.<p>Let W = wealth, and L = technological literacy<p>Then I claim that the following is more true than ever:<p>dW/dL = kW<p>where k is a constant of proportionality. But this simple ODE implies that <p>W = exp(kL). In other words, a person's wealth is an exponential function of their technological literacy.",
+
+"I mostly try not to think about it because it makes me sad. But that does not mean I do not have a lot of feelings about diversity in STEM. I think it is extremely important. I personally have not had difficult experiences that are relevant, but I've heard horror stories from friends. ",
+
+"i think diversity in a merit-based organization is a reflection of society as a whole. for example in my company we're incredibly racially diverse, but we only have like 2.5 women on the team. it's a very tiny company, but i feel like it's reflective of the state of diversity in STEM as a whole. so we think about these things when we're hiring, because we want diversity, but ultimately we're a meritocracy. so the solution, to me, is to have more women and minorities who deserve these kinds of opportunities. but how we go about doing that involves, like, eliminating inequality in the entire world and that's not possible. sigh.",
+
+"I think focusing on outreach isn't important if the people who are already in stem are racist/sexist etc. ",
+
+"I want to see these results when you're finished, but I'm also almost positive they'll reveal what I already know to be true. Correcting for selection bias, MIT students don't give a fuck about any of this.",
+
+"i was born",
+
+"I was poor, went to a shitty school system before MIT, and it constantly hit me in the face with the advantages other people had. There's a reason for the lack of socioeconomic and racial diversity in a lot of STEM fields (esp. course 8), and it shows in a lot of ways in which we experience MIT. ",
+
+"i wish people understood that diversity is really important and the more diverse we are the better science we can do because people don't get caught up in all of the politics of race, gender, weird identity stuff, etc.  well, at least i hope that is an achievable objective.",
+
+"I'm a white guy who has always had an interest in STEM, and nobody has ever made me feel like that's wrong or told me I couldn't do it.  I was aware of the gender gap, but not of some of the more explicit sexism until I started hearing horror stories from some of my friends--including a girlfriend who told me about getting a \"girls can't do math\" talk from an (aging) MIT professor (who asked who had helped her when she did very well on a math pset).  <p>So to some extent this is a cultural issue, and I think it _is_ getting better, just more slowly than anyone would like.  It's hard to fix because fixing it involves changing the culture, but hopefully more visibility of women doing STEM things will encourage girls to stick with it (I think a big part of the issue is girls getting turned off to STEM fields when growing up).  <p>I think it's an important issue because of the sexism issues involved (obviously).  But even from a purely utilitarian standpoint, we need more good STEM people, period--to invent and build things and figure things out and solve the world's problems.  STEM is the most important academic area and the one with the most potential to make our lives better as a species; we shouldn't be trying to dissuade half the population from entering it.",
+
+"I'm in a PhD program. Academia is a pyramid scheme and I am underpaid slave labor. That system feeds into STEM's diversity problems. This is also why the above recommendations center around academia, since that is where most of my experience lies.",
+
+"I've been pushing my company to hire another woman (I'm the only one aside from our office manager, out of 19 people, 17 of which are engineers). It's taken a long time and nothing has come of it, because there just aren't really any good candidates, or they don't respond. Mechatronics, which my company does, is extremely male-dominated, and I suspect most quality female candidates are hesitant to join a smaller company that offers fewer benefits (and perhaps stability) and is very male. I think there's a tipping point, probably around 20-30%, where it's easier to get more women if there are women already there, because a very unbalanced environment can be uncomfortable. Plus a larger company is less likely to deny you maternity leave, pay you less, etc.<p>My company is generally great and I do really like my job and my coworkers, but it pays me a lot less than my first job at a huge corporation and I'm constantly wondering if what I make is \"fair\" compared to all my male colleagues (obviously salaries are secret). I'm also the youngest, which is a confounding factor.",
+
+"It seems to me like the existence of \"women in engineering\" organizations only serves to reinforce the stereotype that women's presence in stem is atypical, instead of breaking it. Unfortunately, this fact makes it hard to talk about a problem that clearly needs to be solved without getting into that cycle... it's hard. So, I generally try to avoid it, I guess.",
+
+"it's really unfortunate looking around every one of my classrooms and knowing that, demographically, there are ~0 other people like me (queer, female). equally unfortunate is how few professors i have who are anything like me (again demographically). where are my role models?<p>also, microaggressions.",
+
+"Long-form questions are terrible. I have psets.",
+
+"My experience as a woman in STEM has made me understand what systematic racism is like in a way that I never before understood.",
+
+"My high school was 40% white, but sometimes people assume that I grew up in an environment that was almost exclusively white, when in reality most of my friends weren't white.  That kinda bothers me, but there's nothing to be done about prejudices.",
+
+"No significant event other than my own struggles, and seeing friend struggle just because of who they are.",
+
+"Nobody ever acted sexist toward me or tried to discourage me from going into STEM. Probably because they could tell I wouldn't've given a fuck.",
+
+"Not all Hispanics are Mexican",
+
+"people can't help but notice when one group is visibly under- or over-represented in a class or occupation. for example, if we magically had \"equal opportunity\" for a day and still ended up with a shortage of women in science, people would (subconsciously) notice and give women fewer opportunities. this is what grinds my gears about people who say \"equal opportunity, not necessarily equal outcome.\" equal opportunity is not sustainable without equal outcome.",
+
+"Random probably inaccurate thoughts (and I'm a bit drunk too):<p>Yes these people can be annoying. Hate, discrimination, etc are depressing topics.<p>Anyone whose primary focus in life (identity) is on moral issues and evangelizes is often perceived as annoying regardless of type (religion, political, social justice, etc). Having it be solely a sub focus may cause more people to listen. Proposing concrete solutions rather than solely pointing out the problem may help. Avoiding pinning blame and instead focusing on advise may help. (When possible) focusing on yourself and your friends rather than strangers may help.<p>The biggest annoyance is likely hearing evangelization about something which is false. Avoid making general claims when specific ones suffice (context sensitive), as people are likely more willing to listen and agree, and the statement may be more likely to be demonstrably accurate.<p>People don't want to hear too much about hate and suffering--they are depressing topics. But in some cases such topics can be transformed into happy topics by thinking about improvement, better world, etc<p>Make sure to stay happy. A focus on hate and suffering might not be healthy.",
+
+"Realizing I often felt more insecure than others in my class, or felt judged",
+
+"Remember, you are talking to a hostile audience whenever you talk about diversity. Make sure to say and do what will do the most good, even if that means not making the deepest/strongest points. It is better to make a weak point that sticks than a strong argument that alienates. This also means not going super deep into racial studies vocabulary or theory. Analytically maximize progress, even if it is painful to take small steps. ",
+
+"Seems like common sense--If we're excluding (by discouragement or unfair obstacles) some people from participating, we're excluding ideas and improvements, and that's just dumb. ",
+
+"Sexual assault and rape of myself and my friends and the response to my suffering from my advisor, family, and peers. I went through my life feeling that I was equal to a man, but these events on campus have reminded me of my perceived inferiority and the discrimination I face as well as the things people think they can still get away with.",
+
+"Start? Longggg time ago. Cannot remember when. Not much more. ",
+
+"Talking about diversity shouldn't be a rant about how underpriviliged you are or how everyone is against you because of race/gender/religion/whatever. Many people never come across problems others experience because of these factors, so they don't know the struggle is real. These conversations should be about how we can address any problems people encounter at the very root.<p>The challenge is getting the diversity there in the first place I would argue. My sister and I are of similar intellect, but she's very good at writing and music composition, while I was very good at math and science. It's not clear to us that if we had been encouraged into those fields in the same way growing up, we would have had such a divide (or struggled so much with our \"opposing fields\")",
+
+"the failure mode other entities have suffered is that they push out marginalized people, and those people a) are sad and then b) go somewhere else and talk about how much the entity is a cesspool of misogyny and general fuckery.",
+
+"This relates to what I said above- the biggest source of insecurity I've experienced as a minority in a STEM field is imposter's syndrome, mostly brought on by my peers' (especially in high school) perceived (real or otherwise) judgement whenever I've benefited from a program that is targeted at minorities. Its incredibly frustrating to be judged for utilizing the one resource I have available to help me get ahead, while they get no beef for making ample and unconscious use of all the easy stepping stones that were laid out before them at birth (highly educated parents with social connections and all that entails, a given assumption of competence, social queues that create a sense of belonging, etc.). Seriously, its not like I work any less hard or produce shoddier results, but still I have to deal with things like this: just last week I was in a social environment that required meeting adults, and one of the questions that inevitably came up was where I go to school. The expected (and honestly most common) response to \"MIT\" is \"wow,\" but along with that I sometimes get \"its ok, as long as you can get through it, it doesn't matter how you do, its the degree that counts.\" What makes this stranger think that I'm flunking my classes? Where is the implicit assumption of competence that I've worked my ass off all my life, at the cost of becoming ostracized from much of my family, to try to emulate? But no, I'm just another whiner talking about issues that haven't been relevant since the 60s. Yeah, whatever, I'll just go back to studying. At least the assholes are the exception and not the norm.",
+
+"this summer i interned at a national lab. during the first lab meeting, the lab head introduced everyone in the group and talked about how it was a very diverse group, with people from many different countries. i was one of two women in the 25 person room, and we were the only two people ho seemed amused by his comment. i guess that was a memorable incident?",
+
+"transitioning from female to male, suffering from depression, taking medical leave from MIT and returning have made me care because there are a lot of ways i break the archetype of STEM invisibly but still manage to get by because they aren't immediately legible<p>whether or not i or anyone else is read as \"queer/non-white/insert-category-here\" doesn't impact our ability to be awesome at STEM, so i think it's important to work against that archetype",
+
+"we need diverse experiences so that we can know what the problems in the world are and diverse ways of approaching problems so that we can solve them. diverse backgrounds seems like a good way to get this. it seems stupid to push out smart people who could make a huge positive impact on the world.",
+
+"When I was a freshman, someone made a very public comment on Facebook about how people who can't pay \"sticker price\" for MIT shouldn't be here. I've faced discrimination because my disability is invisible. My (female) friend had a (male) professor show up drunk to a presentation and make inappropriate and disparaging comments.<p>People who hate when people talk about diversity usually feel that way because they're already well-represented."];
+
+updateHash();
+
+ </script>
+</html>
