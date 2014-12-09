@@ -169,12 +169,12 @@ body {
          $("body").css("background-color", HSVtoRGB(i/data.length, s, v));
      },
      updateHash = function() {
-         if (location.hash.contains("should")) {
+         if (location.hash.indexOf("should") != -1) {
              data = sh;
              type = "should";
              v = 0.5;
              i = parseInt(location.hash.replace("#should", ""));
-         } else if (location.hash.contains("else")) {
+         } else if (location.hash.indexOf("else") != -1) {
              data = el;
              type = "else";
              v = 0.3;
