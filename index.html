@@ -8,7 +8,7 @@ body {
     background: rgb(100, 100, 100);
     color: white;
     font-family: "Dosis";
-    transition: background-color 2s cubic-bezier(0.39, 0.575, 0.565, 1);
+    transition: all 1s cubic-bezier(0.39, 0.575, 0.565, 1);
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -154,7 +154,7 @@ body {
 }
 
  var i = -1,
-     s = 0.6,
+     s = 1,
      v = NaN,
      type = "",
      updateText = function() {
@@ -166,7 +166,10 @@ body {
          else
              $("#should").addClass("alternate");
          $("#response").html(data[i]);
-         $("body").css("background-color", HSVtoRGB(i/data.length, s, v));
+         if (i <= 2)
+             $("body").css("background-image",  "linear-gradient(to right,"+[HSVtoRGB(data.length-3+i, s, v), HSVtoRGB(i <= 1 ? data.length-2+i : (i-2)/data.length, s, v), HSVtoRGB(i == 0 ? data.length-1 : (i-1)/data.length, s, v), HSVtoRGB((i)/data.length, s, v)].join(", ") +")");
+         $("body").css("background-image",  "linear-gradient(to right,"+[HSVtoRGB((i-2)/data.length, s, v), HSVtoRGB((i-1)/data.length, s, v), HSVtoRGB((i)/data.length, s, v)].join(", ") +")");
+         $("body").css("background-color",  HSVtoRGB((i)/data.length, s, v));
      },
      updateHash = function() {
          if (location.hash.indexOf("should") != -1) {
@@ -183,7 +186,7 @@ body {
          else {
              data = sh;
              type = "should";
-             v = 0.4;
+             v = 0.5;
          }
          if (isNaN(i))
              i = Math.floor(Math.random()*data.length);
