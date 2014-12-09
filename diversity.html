@@ -47,12 +47,12 @@ body {
 
 #response {
     font-weight: 400;
-    width: 640px;
+    width: 660px;
     margin: 0 auto;
     font-size: 1.5em;
     opacity: 0.9;
     max-width: 80%;
-    line-height: 1.3;
+    line-height: 1.35;
     -webkit-touch-callout: text;
     -webkit-user-select: text;
     -khtml-user-select: text;
@@ -165,10 +165,14 @@ body {
              type = "else";
              v = 0.2;
              i = parseInt(location.hash.replace("#else", ""));
+             $("#else").addClass("current");
+             $("#else").removeClass("alternate");
+             $("#should").addClass("alternate");
          }
          else {
              data = sh;
              type = "should";
+             v = 0.4;
          }
          if (isNaN(i))
              i = Math.floor(Math.random()*data.length);
