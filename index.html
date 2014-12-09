@@ -1,7 +1,7 @@
 <html>
 <head>
     <title>Diversity Poll Responses (Dec 2014)</title>
-<link href='//fonts.googleapis.com/css?family=Dosis:400,600' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Dosis:400,600' rel='stylesheet' type='text/css'>
 <style>
 
 body {
@@ -110,13 +110,20 @@ body {
 </head>
 <body>
 
-<div id="should" class="current question" title="click for a random answer">What should we do about diversity in STEM, if anything?
+<div id="should" class="alternate question" title="click for a random answer">What should we do about diversity in STEM, if anything?
     <br><span class="subtitle">concrete proposals, here.</span></div>
 <div id="else" class="alternate question" title="click for a random answer">Anything else?
     <br><span class="subtitle">e.g. significant event that caused you to start caring about diversity
         <br> or how much you hate people who talk about diversity all the time, etc.</span></div>
 
-<div id="response">
+<div id="response"><span style="font-weight: 600;">
+    Diversity in STEM: how racist and sexist are we, and should we care?
+    <p>
+    Here are the answers of more than fifty MIT students and alumni.
+    <p>
+    To scroll through answers, click the arrows (or use the arrow keys).
+    <p>
+    To change between the two questions asked, click the titles above.</span>
 </div>
 
 <div id="left" class="arrows" title="click to go left, or press the left arrow key"> &lt; </div>
@@ -124,7 +131,7 @@ body {
 
 
 </body>
- <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
  <script>
 
  // from https://stackoverflow.com/questions/17242144/javascript-convert-hsb-hsv-color-to-rgb-accurately
@@ -146,11 +153,18 @@ body {
     return "rgb(" + [Math.floor(r * 255), Math.floor(g * 255),  Math.floor(b * 255)].join(", ") + ")";
 }
 
- var i = NaN,
+ var i = -1,
      s = 0.6,
-     v = 0.4,
+     v = NaN,
+     type = "",
      updateText = function() {
          location.hash = type + i;
+         $("#"+type).addClass("current");
+         $("#"+type).removeClass("alternate");
+         if (type == "should")
+             $("#else").addClass("alternate");
+         else
+             $("#should").addClass("alternate");
          $("#response").html(data[i]);
          $("body").css("background-color", HSVtoRGB(i/data.length, s, v));
      },
@@ -158,16 +172,13 @@ body {
          if (location.hash.contains("should")) {
              data = sh;
              type = "should";
-             v = 0.4;
+             v = 0.5;
              i = parseInt(location.hash.replace("#should", ""));
          } else if (location.hash.contains("else")) {
              data = el;
              type = "else";
-             v = 0.2;
+             v = 0.3;
              i = parseInt(location.hash.replace("#else", ""));
-             $("#else").addClass("current");
-             $("#else").removeClass("alternate");
-             $("#should").addClass("alternate");
          }
          else {
              data = sh;
@@ -177,12 +188,11 @@ body {
          if (isNaN(i))
              i = Math.floor(Math.random()*data.length);
          updateText();
-     },
-     type = "";
+     };
 
 var right = function() {
      i++;
-     if (i == data.length)  i = 0;
+     if (i >= data.length)  i = 0;
      updateText();
      $("#right").addClass("selected");
      setTimeout(function() {$("#right").removeClass("selected");}, 100);
@@ -190,7 +200,7 @@ var right = function() {
 
  var left = function() {
      i--;
-     if (i == -1)  i = data.length - 1;
+     if (i <= -1)  i = data.length - 1;
      updateText();
      $("#left").addClass("selected");
      setTimeout(function() {$("#left").removeClass("selected");}, 100);
@@ -424,6 +434,11 @@ var el = ["7th grade assignment to draw a scientist- almost everyone drew a whit
 "When I was a freshman, someone made a very public comment on Facebook about how people who can't pay \"sticker price\" for MIT shouldn't be here. I've faced discrimination because my disability is invisible. My (female) friend had a (male) professor show up drunk to a presentation and make inappropriate and disparaging comments.<p>People who hate when people talk about diversity usually feel that way because they're already well-represented."];
 
 updateHash();
+if (i == -1) {
+    $("body").css("background-color", "#A31F34");
+    $("#should").removeClass("current");
+    $("#should").addClass("alternate");
+}
 
  </script>
 </html>
