@@ -124,6 +124,13 @@ a {
     font-size: 0.5em;
 }
 
+#permalink {
+    float:left;
+    font-size: 2.6em;
+    line-height: 1;
+    opacity: 0.8;
+}
+
 </style>
 </head>
 <body>
@@ -145,9 +152,9 @@ a {
     </span>
 </div>
 
-<div id="feedback"> <a href="mailto:mitobiome@mit.edu">Feedback? Find us at mitobiome@mit.edu</a>
+<div id="feedback"> <span id="permalink"></span><a href="mailto:mitobiome@mit.edu">Feedback? Find us at mitobiome@mit.edu</a>
 <a href="https://github.com/bqpd/mitobiome">and/or on Github</a>
-<br><a href="http://student.mit.edu/searchiap/iap-9289af8f4a299dfd014a2d29af2200ff.html"> Want to join the discussion? Try our IAP class: "Diversity in STEM"</a></div>
+<br><a href="http://student.mit.edu/searchiap/iap-9289af8f4a299dfd014a2d29af2200ff.html"> Join the discussion in our IAP 2015 class "Diversity in STEM"</a></div>
 
 <div id="left" class="arrows" title="click to go left, or press the left arrow key"> &lt; </div>
 <div id="right" class="arrows" title="click to go right, or press the right arrow key"> &gt; </div>
@@ -193,6 +200,7 @@ a {
              $("body").css("background-image",  "linear-gradient(to right,"+[HSVtoRGB(data.length-3+i, s, v), HSVtoRGB(i <= 1 ? data.length-2+i : (i-2)/data.length, s, v), HSVtoRGB(i == 0 ? data.length-1 : (i-1)/data.length, s, v), HSVtoRGB((i)/data.length, s, v)].join(", ") +")");
          $("body").css("background-image",  "linear-gradient(to right,"+[HSVtoRGB((i-2)/data.length, s, v), HSVtoRGB((i-1)/data.length, s, v), HSVtoRGB((i)/data.length, s, v)].join(", ") +")");
          $("body").css("background-color",  HSVtoRGB((i)/data.length, s, v));
+         $("#permalink").html("<a href="+location.hash+">#"+i+"</a>")
      },
      updateHash = function() {
          if (location.hash.indexOf("should") != -1) {
