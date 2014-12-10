@@ -183,7 +183,7 @@ a {
     return "rgb(" + [Math.floor(r * 255), Math.floor(g * 255),  Math.floor(b * 255)].join(", ") + ")";
 }
 
- var i = -1,
+ var i = 0,
      s = 1,
      v = NaN,
      type = "",
@@ -195,12 +195,13 @@ a {
              $("#else").addClass("alternate");
          else
              $("#should").addClass("alternate");
-         $("#response").html(data[i]);
-         if (i <= 2)
-             $("body").css("background-image",  "linear-gradient(to right,"+[HSVtoRGB(data.length-3+i, s, v), HSVtoRGB(i <= 1 ? data.length-2+i : (i-2)/data.length, s, v), HSVtoRGB(i == 0 ? data.length-1 : (i-1)/data.length, s, v), HSVtoRGB((i)/data.length, s, v)].join(", ") +")");
-         $("body").css("background-image",  "linear-gradient(to right,"+[HSVtoRGB((i-2)/data.length, s, v), HSVtoRGB((i-1)/data.length, s, v), HSVtoRGB((i)/data.length, s, v)].join(", ") +")");
-         $("body").css("background-color",  HSVtoRGB((i)/data.length, s, v));
-         $("#permalink").html("<a href="+location.hash+">#"+(i+1)+"</a>")
+         idx = i - 1
+         $("#response").html(data[idx]);
+         if (idx <= 2)
+             $("body").css("background-image",  "linear-gradient(to right,"+[HSVtoRGB(data.length-3+idx, s, v), HSVtoRGB(idx <= 1 ? data.length-2+idx : (idx-2)/data.length, s, v), HSVtoRGB(idx == 0 ? data.length-1 : (idx-1)/data.length, s, v), HSVtoRGB((idx)/data.length, s, v)].join(", ") +")");
+         $("body").css("background-image",  "linear-gradient(to right,"+[HSVtoRGB((idx-2)/data.length, s, v), HSVtoRGB((idx-1)/data.length, s, v), HSVtoRGB((idx)/data.length, s, v)].join(", ") +")");
+         $("body").css("background-color",  HSVtoRGB((idx)/data.length, s, v));
+         $("#permalink").html("<a href="+location.hash+">#"+(idx+1)+"</a>")
      },
      updateHash = function() {
          if (location.hash.indexOf("should") != -1) {
@@ -220,13 +221,13 @@ a {
              v = 0.5;
          }
          if (isNaN(i))
-             i = Math.floor(Math.random()*data.length);
+             i = 1+Math.floor(Math.random()*(data.length-1));
          updateText();
      };
 
 var right = function() {
      i++;
-     if (i >= data.length)  i = 0;
+     if (i > data.length)  i = 1;
      updateText();
      $("#right").addClass("selected");
      setTimeout(function() {$("#right").removeClass("selected");}, 100);
@@ -234,7 +235,7 @@ var right = function() {
 
  var left = function() {
      i--;
-     if (i <= -1)  i = data.length - 1;
+     if (i < 1)  i = data.length;
      updateText();
      $("#left").addClass("selected");
      setTimeout(function() {$("#left").removeClass("selected");}, 100);
