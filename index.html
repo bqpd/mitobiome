@@ -200,7 +200,7 @@ a {
              $("body").css("background-image",  "linear-gradient(to right,"+[HSVtoRGB(data.length-3+i, s, v), HSVtoRGB(i <= 1 ? data.length-2+i : (i-2)/data.length, s, v), HSVtoRGB(i == 0 ? data.length-1 : (i-1)/data.length, s, v), HSVtoRGB((i)/data.length, s, v)].join(", ") +")");
          $("body").css("background-image",  "linear-gradient(to right,"+[HSVtoRGB((i-2)/data.length, s, v), HSVtoRGB((i-1)/data.length, s, v), HSVtoRGB((i)/data.length, s, v)].join(", ") +")");
          $("body").css("background-color",  HSVtoRGB((i)/data.length, s, v));
-         $("#permalink").html("<a href="+location.hash+">#"+i+"</a>")
+         $("#permalink").html("<a href="+location.hash+">#"+(i+1)+"</a>")
      },
      updateHash = function() {
          if (location.hash.indexOf("should") != -1) {
