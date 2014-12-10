@@ -25,7 +25,7 @@ body {
 }
 
 .current {
-    opacity: 0.8;
+    opacity: 0.85;
 }
 
 .clicked {
@@ -67,6 +67,7 @@ body {
     margin: 0 auto;
     text-align: right;
     max-width: 80%;
+    color: rgba(255, 255, 255, 0.5);
 }
 
 #feedback a:hover {
@@ -152,7 +153,9 @@ a {
     </span>
 </div>
 
-<div id="feedback"> <span id="permalink"></span><a href="mailto:mitobiome@mit.edu">Feedback? Find us at mitobiome@mit.edu</a>
+<div id="feedback"> <span id="permalink"></span>
+<a href="#should0">Response written December 2014: click here for details.</a>
+<br><a href="mailto:mitobiome@mit.edu">Feedback? Find us at mitobiome@mit.edu</a>
 <a href="https://github.com/bqpd/mitobiome">and/or on Github</a>
 <br><a href="http://student.mit.edu/searchiap/iap-9289af8f4a299dfd014a2d29af2200ff.html"> Join the discussion in our IAP 2015 class "Diversity in STEM"</a></div>
 
@@ -196,12 +199,16 @@ a {
          else
              $("#should").addClass("alternate");
          idx = i - 1
-         $("#response").html(data[idx]);
-         if (idx <= 2)
-             $("body").css("background-image",  "linear-gradient(to right,"+[HSVtoRGB(data.length-3+idx, s, v), HSVtoRGB(idx <= 1 ? data.length-2+idx : (idx-2)/data.length, s, v), HSVtoRGB(idx == 0 ? data.length-1 : (idx-1)/data.length, s, v), HSVtoRGB((idx)/data.length, s, v)].join(", ") +")");
-         $("body").css("background-image",  "linear-gradient(to right,"+[HSVtoRGB((idx-2)/data.length, s, v), HSVtoRGB((idx-1)/data.length, s, v), HSVtoRGB((idx)/data.length, s, v)].join(", ") +")");
-         $("body").css("background-color",  HSVtoRGB((idx)/data.length, s, v));
-         $("#permalink").html("<a href="+location.hash+">#"+(idx+1)+"</a>")
+         if (i == 0)
+            showInstructions();
+        else {
+             $("#response").html(data[idx]);
+             if (idx <= 2)
+                 $("body").css("background-image",  "linear-gradient(to right,"+[HSVtoRGB(data.length-3+idx, s, v), HSVtoRGB(idx <= 1 ? data.length-2+idx : (idx-2)/data.length, s, v), HSVtoRGB(idx == 0 ? data.length-1 : (idx-1)/data.length, s, v), HSVtoRGB((idx)/data.length, s, v)].join(", ") +")");
+             $("body").css("background-image",  "linear-gradient(to right,"+[HSVtoRGB((idx-2)/data.length, s, v), HSVtoRGB((idx-1)/data.length, s, v), HSVtoRGB((idx)/data.length, s, v)].join(", ") +")");
+             $("body").css("background-color",  HSVtoRGB((idx)/data.length, s, v));
+             $("#permalink").html("<a href="+location.hash+">#"+(idx+1)+"</a>")
+        }
      },
      updateHash = function() {
          if (location.hash.indexOf("should") != -1) {
@@ -223,7 +230,17 @@ a {
          if (isNaN(i))
              i = 1+Math.floor(Math.random()*(data.length-1));
          updateText();
+     },
+     showInstructions = function() {
+         $("#response").html('<span style="font-weight: 600; opacity: 1; font-size: 1.3em;">         We asked the exact two questions above at MIT.         <p>         More than fifty students and alumni responded.         <p>         Click a question to read its responses.         <p>         Click arrows to scroll, or use the left/right arrow keys.         </span>')
+         $("body").css("background-color", "#A31F34");
+         $("body").css("background-image", "none");
+         $("#should").removeClass("current");
+         $("#should").addClass("alternate");
+         $("#permalink").html("");
      };
+
+     $(window).on('hashchange', updateHash)
 
 var right = function() {
      i++;
@@ -469,11 +486,6 @@ var el = ["7th grade assignment to draw a scientist- almost everyone drew a whit
 "When I was a freshman, someone made a very public comment on Facebook about how people who can't pay \"sticker price\" for MIT shouldn't be here. I've faced discrimination because my disability is invisible. My (female) friend had a (male) professor show up drunk to a presentation and make inappropriate and disparaging comments.<p>People who hate when people talk about diversity usually feel that way because they're already well-represented."];
 
 updateHash();
-if (i == 0) {
-    $("body").css("background-color", "#A31F34");
-    $("#should").removeClass("current");
-    $("#should").addClass("alternate");
-}
 
  </script>
  <script>
